@@ -22,7 +22,9 @@ export default new Vuex.Store({
     // onlineBoardList data
     onlineBoardList: [],
     // chat message data
-    chatMessage: []
+    chatMessage: [],
+    // close tip dialog stamp
+    tipDialogCloseStamp: ''
   },
   mutations: {
     // set user base info, get it by login response
@@ -64,6 +66,10 @@ export default new Vuex.Store({
     // push new message
     pushCharMessage (state, message) {
       state.chatMessage.push(message)
+    },
+    // update tip dialog close stamp
+    updateTipDialogCloseStamp (state) {
+      state.tipDialogCloseStamp = (new Date()).getTime()
     }
   },
   actions: {
