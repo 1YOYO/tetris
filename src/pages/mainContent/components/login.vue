@@ -307,6 +307,9 @@ export default {
         case 'offline': dealOffline(data)
           break
 
+        case 'interActive': dealInterActive(data)
+          break
+
         default:
           break
       }
@@ -370,6 +373,17 @@ export default {
         text: `${USERNAME} is offline`,
         unique: (new Date()).getTime()
       })
+    },
+    /**
+     * @description             deal user inter active
+     * @return     {undefined}  no return
+     */
+    async dealInterActive (type, USERNAME) {
+      const { openInterActiveRequestTipDialog } = this
+
+      if (type === 'Fight' || type === 'View') {
+        openInterActiveRequestTipDialog(type, USERNAME)
+      }
     },
     ...mapMutations(['setUserBaseInfo', 'setWebSocketInstance', 'sendWSMessage', 'setLeaderBoardHistoryList', 'setOnlineBoardList', 'pushCharMessage'])
   },
