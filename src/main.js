@@ -27,11 +27,16 @@ import './assets/style/class.less'
 // icon
 import './assets/font/iconfont.css'
 
+// dialog plugins
+import dialogPlugins from './plugins/dialogExtend'
+
 Vue.use(ElementUI)
 
 Vue.use(elementUIExtend)
 
 Vue.use(GlobalComponents)
+
+Vue.use(dialogPlugins)
 
 Vue.config.productionTip = false
 

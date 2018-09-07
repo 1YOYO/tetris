@@ -10,7 +10,11 @@ import pagination from './pagination.vue'
 
 import canvasBG from './canvasBG'
 
-import confirm from './confirm'
+import confirm from './dialog/confirm'
+
+import alert from './dialog/alert'
+
+import tip from './dialog/tip'
 
 export default {
   install: (Vue) => {
@@ -21,5 +25,7 @@ export default {
     Vue.component('pagination', pagination)
     Vue.component('canvasBG', canvasBG)
     Vue.component('confirm', confirm)
+    Vue.component('alert', alert)
+    Vue.component('tip', tip)
   }
 }
