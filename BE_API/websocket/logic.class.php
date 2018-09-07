@@ -43,10 +43,13 @@ Class LogicWS extends WebSocket {
     $this->msg->type = $messageType = $socket['message']['type'];
 
     switch ($messageType) {
-      case 'connect': $this->dealConnect($socket);
+      case 'connect'    : $this->dealConnect($socket);
         break;
       
-      case 'chat'   : $this->dealChat($socket);
+      case 'chat'       : $this->dealChat($socket);
+        break;
+
+      case 'interActive': $this->dealInterActive($socket);
         break;
 
       case 'heart' : ;
@@ -171,6 +174,31 @@ Class LogicWS extends WebSocket {
     $this->msg->data = $message;
 
     $this->sendMessage($this->msg, array_column($this->sockets, 'resource'));
+  }
+
+  public function dealInterActive ($socket) {
+    $message = $socket['message'];
+    $userInfo = $socket['data']->userInfo;
+
+    $interActiveType = $message['interActiveType'];
+    $target = $message['target'];
+
+    if ($interActiveType === 'Fight' || $interActiveType === 'View') {
+      foreach($this->sockets as $current) {
+        if ($current['resource'] === $this->master) continue;
+  
+        if ($current['data']->userInfo['UID'] === $target) {
+          $currentUserInfo = $current['data']->userInfo;
+  
+          $this->msg->data->USERNAME = $currentUserInfo['USERNAME'];
+          $this->msg->data->type = $interActiveType;
+          $this->sendMessage($this->msg, [$current['resource']]);
+          break;
+        }
+      }
+    }
+
+    if ($interActiveType === 'acceptFight') {}
   }
 }
 ?>
