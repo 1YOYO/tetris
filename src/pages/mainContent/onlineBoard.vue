@@ -4,7 +4,7 @@
     <div class="top-title">online-board</div>
 
     <!-- search input -->
-    <input-with-button class="search-input" placeholder="Please input userName" v-model="search.userName" @enter="getOnlineBoardListData">
+    <input-with-button class="search-input" placeholder="Please input userName to search" v-model="search.userName" @enter="getOnlineBoardListData">
       <template slot="button-content">
         <i class="el-icon-search" />
       </template>
@@ -31,7 +31,7 @@
         <table-column
           label="Action">
           <template slot-scope="scope">
-            <div class="button" @click="interActive(scope.row)">{{ getInterActiveType(scope.row.status) }}</div>
+            <div class="button" @click="interActive(scope.row)">{{ getInterActiveType(scope.row) }}</div>
           </template>
         </table-column>
 
@@ -51,11 +51,13 @@
       <online-chat />
     </template>
 
+    <confirm ref='confirm' />
+    <tip ref='tip' />
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 
 import onlineChat from './components/onlineChat'
 
@@ -104,13 +106,24 @@ export default {
     }
   },
   computed: {
-    ...mapState(['onlineBoardList'])
+    ...mapState(['onlineBoardList', 'userBaseInfo', 'tipDialogCloseStamp'])
   },
   watch: {
+    /**
+     * @description             refresh online board list data when onlineboard data change
+     * @return     {undefined}  no return
+     */
     onlineBoardList () {
       const { getOnlineBoardListData } = this
 
       getOnlineBoardListData()
+    },
+    /**
+     * @description             close tip dialog when tip dialog close stamp change
+     * @return     {undefined}  no return
+     */
+    tipDialogCloseStamp () {
+      this.$closeTip()
     }
   },
   methods: {
@@ -222,7 +235,11 @@ export default {
      * @param      {string}     user current status
      * @return     {undefined}  no return
      */
-    getInterActiveType (status) {
+    getInterActiveType ({UID, status}) {
+      const { userBaseInfo: { UID: SELFUID } } = this
+
+      if (UID === SELFUID) return 'SELF'
+
       if (statusToInterActiveTypeMap.has(status)) {
         return statusToInterActiveTypeMap.get(status)
       } else {
@@ -230,11 +247,58 @@ export default {
       }
     },
     /**
-     * @description             inter active with others
+     * @description           inter active with others
+     * @return     {Promise}  Async Promise
+     */
+    async interActive ({UID, USERNAME, status}) {
+      const { userBaseInfo: { UID: SELFUID } } = this
+
+      if (UID === SELFUID) return
+
+      const { getInterActiveType, getInterActiveStatus, dealInterActiveRequest } = this
+
+      const interActiveType = getInterActiveType({ UID, status })
+
+      if (interActiveType === 'ERROR') return
+
+      const confirm = await getInterActiveStatus(interActiveType, USERNAME)
+
+      if (!confirm) return
+
+      dealInterActiveRequest(interActiveType, UID)
+    },
+    /**
+     * @description           get inter active status
+     * @return     {Promise}  Promise
+     */
+    getInterActiveStatus (type, USERNAME) {
+      const message = `Do you want to ${type} ${USERNAME}?`
+
+      return this.$confirm('Tip', message)
+    },
+    /**
+     * @description             deal user inter active request
      * @return     {undefined}  no return
      */
-    interActive ({UID, USERNAME, status}) {
+    dealInterActiveRequest (interActiveType, UID) {
+      const { sendWSMessage, showWaitingDialog } = this
+
+      sendWSMessage({
+        type: 'interActive',
+        interActiveType,
+        target: UID
+      })
+
+      showWaitingDialog()
     },
+    /**
+     * @description             show wait tip dialog
+     * @return     {undefined}  no return
+     */
+    showWaitingDialog () {
+      this.$showTip('Tip', 'Waiting for response...')
+    },
+    ...mapMutations(['sendWSMessage']),
     ...mapGetters(['getOnlineBoardData'])
   }
 }

@@ -3,7 +3,7 @@
     <div class="top-title">Leader Board</div>
 
     <!-- search input -->
-    <input-with-button class="search-input" placeholder="Please input userName" v-model="search.userName" @enter="getLeaderBoardListData">
+    <input-with-button class="search-input" placeholder="Please input userName to search" v-model="search.userName" @enter="getLeaderBoardListData">
       <template slot="button-content">
         <i class="el-icon-search" />
       </template>
