@@ -50,13 +50,12 @@
     <template class="online-user-chat" v-else>
       <online-chat />
     </template>
-
-    <confirm ref='confirm' />
-    <tip ref='tip' />
   </div>
 </template>
 
 <script>
+import dialog from '@/mixins/dialog'
+
 import { mapState, mapMutations, mapGetters } from 'vuex'
 
 import onlineChat from './components/onlineChat'
@@ -69,6 +68,7 @@ const statusToInterActiveTypeMap = new Map([
 
 export default {
   name: 'OnlineBoard',
+  mixins: [dialog],
   components: {
     onlineChat
   },
@@ -123,7 +123,9 @@ export default {
      * @return     {undefined}  no return
      */
     tipDialogCloseStamp () {
-      this.$closeTip()
+      const { closeTip } = this
+
+      closeTip()
     }
   },
   methods: {
@@ -272,9 +274,11 @@ export default {
      * @return     {Promise}  Promise
      */
     getInterActiveStatus (type, USERNAME) {
+      const { exConfirm } = this
+
       const message = `Do you want to ${type} ${USERNAME}?`
 
-      return this.$confirm('Tip', message)
+      return exConfirm('Tip', message)
     },
     /**
      * @description             deal user inter active request
@@ -296,7 +300,9 @@ export default {
      * @return     {undefined}  no return
      */
     showWaitingDialog () {
-      this.$showTip('Tip', 'Waiting for response...')
+      const { exShowTip } = this
+
+      exShowTip('Tip', 'Waiting for response...')
     },
     ...mapMutations(['sendWSMessage']),
     ...mapGetters(['getOnlineBoardData'])
