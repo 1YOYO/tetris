@@ -7,6 +7,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    // app root instance
+    app: '',
     // interactive token, get it by login response
     userBaseInfo: null,
     // websocket Instance
@@ -27,6 +29,18 @@ export default new Vuex.Store({
     tipDialogCloseStamp: ''
   },
   mutations: {
+    // set app root instance this
+    setAppRootThis (state, instance) {
+      state.app = instance
+    },
+    // open app vue instance's tip dialog
+    showTip (state, {title, message}) {
+      state.app.$showTip(title, message)
+    },
+    // close app vue instance's tip dialog
+    closeTip (state) {
+      state.app.$closeTip()
+    },
     // set user base info, get it by login response
     setUserBaseInfo (state, token) {
       state.userBaseInfo = token
@@ -73,6 +87,14 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    // open app vue instance's confrim
+    confirm ({state}, {title, message}) {
+      return state.app.$confirm(title, message)
+    },
+    // open app vue instance's alert
+    alert (state, {title, message}) {
+      return state.app.$alert(title, message)
+    }
   },
   getters: {
     // get leader board data
