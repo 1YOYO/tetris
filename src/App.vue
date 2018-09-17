@@ -15,9 +15,6 @@ import { mapMutations } from 'vuex'
 export default {
   name: 'App',
   methods: {
-    aaaa () {
-      console.error(this.$confirm)
-    },
     ...mapMutations(['setAppRootThis'])
   },
   created () {

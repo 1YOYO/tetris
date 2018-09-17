@@ -190,6 +190,7 @@ Class LogicWS extends WebSocket {
         if ($current['data']->userInfo['UID'] === $target) {
           $currentUserInfo = $current['data']->userInfo;
   
+          $this->msg->data->UID = $currentUserInfo['UID'];
           $this->msg->data->USERNAME = $currentUserInfo['USERNAME'];
           $this->msg->data->type = $interActiveType;
           $this->sendMessage($this->msg, [$current['resource']]);
@@ -198,7 +199,11 @@ Class LogicWS extends WebSocket {
       }
     }
 
-    if ($interActiveType === 'acceptFight') {}
+    if ($interActiveType === 'acceptFight') {
+
+    }
+
+    if ($interActiveType === 'refuseFight') {}
   }
 }
 ?>

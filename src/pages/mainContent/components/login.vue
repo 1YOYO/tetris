@@ -20,6 +20,8 @@ import { baseInfo } from '@/config'
 
 import { mapState, mapMutations } from 'vuex'
 
+import dialog from '@/mixins/dialog'
+
 export default {
   name: 'Login',
   data () {
@@ -38,6 +40,7 @@ export default {
       tempUserAccountInfo: {}
     }
   },
+  mixins: [dialog],
   computed: {
     ...mapState(['userBaseInfo', 'websocket'])
   },
@@ -292,7 +295,7 @@ export default {
 
       if (!status) return
 
-      const { dealConnectMessage, dealOnline, dealChatMessage, dealOffline } = this
+      const { dealConnectMessage, dealOnline, dealChatMessage, dealOffline, dealInterActive } = this
 
       switch (type) {
         case 'connect': dealConnectMessage(data)
@@ -378,12 +381,24 @@ export default {
      * @description             deal user inter active
      * @return     {undefined}  no return
      */
-    async dealInterActive (type, USERNAME) {
-      const { openInterActiveRequestTipDialog } = this
+    async dealInterActive ({type, UID, USERNAME}) {
+      const { sendWSMessage, exConfirm } = this
 
-      if (type === 'Fight' || type === 'View') {
-        openInterActiveRequestTipDialog(type, USERNAME)
+      if (type === 'Fight') {
+        const status = await exConfirm({tip: 'Fight', message: `Whether to accept ${USERNAME}'s Fight request?`}, 23423)
+
+        sendWSMessage({
+          type: 'interActive',
+          interActiveType: status ? 'acceptFight' : 'refuseFight',
+          target: UID
+        })
       }
+
+      if (type === 'View') {}
+
+      if (type === 'acceptFight') {}
+
+      if (type === 'refuseFight') {}
     },
     ...mapMutations(['setUserBaseInfo', 'setWebSocketInstance', 'sendWSMessage', 'setLeaderBoardHistoryList', 'setOnlineBoardList', 'pushCharMessage'])
   },
