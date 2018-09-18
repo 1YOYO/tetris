@@ -12,8 +12,13 @@
 <script>
 import { mapMutations } from 'vuex'
 
+import dialog from '@/mixins/dialog'
+
+import websocket from '@/mixins/websocket'
+
 export default {
   name: 'App',
+  mixins: [dialog, websocket],
   methods: {
     ...mapMutations(['setAppRootThis'])
   },
