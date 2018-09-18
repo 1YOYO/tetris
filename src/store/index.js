@@ -9,6 +9,8 @@ export default new Vuex.Store({
   state: {
     // app root instance
     app: '',
+    // login time stamp
+    loginTime: '',
     // interactive token, get it by login response
     userBaseInfo: null,
     // websocket Instance
@@ -29,10 +31,6 @@ export default new Vuex.Store({
     tipDialogCloseStamp: ''
   },
   mutations: {
-    // set app root instance this
-    setAppRootThis (state, instance) {
-      state.app = instance
-    },
     // open app vue instance's tip dialog
     showTip (state, {title, message}) {
       state.app.$showTip(title, message)
@@ -40,6 +38,14 @@ export default new Vuex.Store({
     // close app vue instance's tip dialog
     closeTip (state) {
       state.app.$closeTip()
+    },
+    // set app root instance this
+    setAppRootThis (state, instance) {
+      state.app = instance
+    },
+    // update login time stamp
+    updateLoginTime (state) {
+      state.loginTime = (new Date()).getTime()
     },
     // set user base info, get it by login response
     setUserBaseInfo (state, token) {
