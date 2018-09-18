@@ -188,10 +188,8 @@ Class LogicWS extends WebSocket {
         if ($current['resource'] === $this->master) continue;
   
         if ($current['data']->userInfo['UID'] === $target) {
-          $currentUserInfo = $current['data']->userInfo;
-  
-          $this->msg->data->UID = $currentUserInfo['UID'];
-          $this->msg->data->USERNAME = $currentUserInfo['USERNAME'];
+          $this->msg->data->UID = $userInfo['UID'];
+          $this->msg->data->USERNAME = $userInfo['USERNAME'];
           $this->msg->data->type = $interActiveType;
           $this->sendMessage($this->msg, [$current['resource']]);
           break;
@@ -200,10 +198,42 @@ Class LogicWS extends WebSocket {
     }
 
     if ($interActiveType === 'acceptFight') {
+      foreach($this->sockets as $current) {
+        if ($current['resource'] === $this->master) continue;
+  
+        if ($current['data']->userInfo['UID'] === $target) {
+          $this->msg->data->UID = $userInfo['UID'];
+          $this->msg->data->USERNAME = $userInfo['USERNAME'];
+          $this->msg->data->type = $interActiveType;
+          $this->sendMessage($this->msg, [$current['resource']]);
 
+          $this->initFightData($socket, $current);
+
+          print_r($socket);
+
+          print_r($current);
+
+          // write interActive marker
+          break;
+        }
+      }
     }
 
     if ($interActiveType === 'refuseFight') {}
+  }
+
+  public function initFightData ($challenger, $fighter) {
+    $challenger['data']->status = 'fight';
+    $fighter['data']->status = 'fight';
+
+    $challenger['data']->fighter = $fighter['data']->userInfo['UID'];
+    $fighter['data']->fighter = $challenger['data']->userInfo['UID'];
+
+    $challenger['data']->score = 0;
+    $fighter['data']->score = 0;
+
+    $challenger['data']->gameData = null;
+    $fighter['data']->gameData = null;
   }
 }
 ?>
