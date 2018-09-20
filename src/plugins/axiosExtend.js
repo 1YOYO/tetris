@@ -1,11 +1,8 @@
-import Vue from 'vue'
 import Axios from 'axios'
 
 import { baseInfo } from '../config'
 
 import { Notification, Message } from 'element-ui'
-
-Vue.prototype.$http = Axios
 
 const timeout = 3000
 
@@ -72,5 +69,9 @@ function interception (fn, methods) {
   }
 }
 
-Vue.prototype.$http.get = interception(Vue.prototype.$http.get, 'get')
-Vue.prototype.$http.post = interception(Vue.prototype.$http.post, 'post')
+export default function (Vue) {
+  Vue.prototype.$http = Axios
+
+  Vue.prototype.$http.get = interception(Vue.prototype.$http.get, 'get')
+  Vue.prototype.$http.post = interception(Vue.prototype.$http.post, 'post')
+}
