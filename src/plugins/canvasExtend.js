@@ -1,6 +1,14 @@
 const { sin, cos } = Math
 
 /**
+ * @description             clear rect
+ * @return     {undefined}  no return
+ */
+export function clearRect (ctx, { width, height }) {
+  ctx.clearRect(0, 0, width, height)
+}
+
+/**
  * @description      draw line
  * @param  {object}  ctx
  * @param  {object}  lineBegin
@@ -34,12 +42,14 @@ export function drawLine (ctx, lineBegin, lineEnd, lineWidth = 2, lineColor = '#
  * @param {array}   rotateOrigin position
  */
 export function rotatePoint (rotate, [x, y], rotateOrigin = [0, 0]) {
+  rotate *= Math.PI / 180
+
   const rotateOriginX = rotateOrigin[0]
   const rotateOriginY = rotateOrigin[1]
 
   return [
-    ((x - rotateOriginX) * cos(rotate)) - ((y - rotateOriginY.y) * sin(rotate)) + rotateOriginX,
-    ((x - rotateOriginX) * sin(rotate)) + ((y - rotateOriginY.y) * cos(rotate)) + rotateOriginY
+    ((x - rotateOriginX) * cos(rotate)) - ((y - rotateOriginY) * sin(rotate)) + rotateOriginX,
+    ((x - rotateOriginX) * sin(rotate)) + ((y - rotateOriginY) * cos(rotate)) + rotateOriginY
   ]
 }
 
@@ -51,14 +61,51 @@ export function rotatePoint (rotate, [x, y], rotateOrigin = [0, 0]) {
  * @param {array}   rotateOrigin position
  */
 export function rotatePoints (rotate, points, rotateOrigin = [0, 0]) {
-  console.error(points)
   return points.map(point => rotatePoint(rotate, point, rotateOrigin))
 }
 
+/**
+ * @description             draw lattice
+ * @param      {object}     canvas ctx
+ * @param      {array}      lattice draw data
+ * @param      {object}     lattice color
+ * @return     {undefined}
+ */
+export function drawLattice (ctx, [one, two, three, four], color) {
+  ctx.beginPath()
+
+  ctx.moveTo(...one)
+  ctx.lineTo(...two)
+  ctx.lineTo(...three)
+  ctx.lineTo(...four)
+
+  ctx.closePath()
+
+  ctx.strokeStyle = color
+  ctx.fillStyle = color
+
+  ctx.fill()
+  ctx.stroke()
+}
+
+/**
+ * @description             draw lattices
+ * @param      {object}     canvas ctx
+ * @param      {array}      lattice draw data
+ * @param      {object}     lattice color
+ * @return     {undefined}
+ */
+export function drawLattices (ctx, lattices, color) {
+  lattices.forEach(lattice => drawLattice(ctx, lattice, color))
+}
+
 const canvas = {
+  clearRect,
   drawLine,
   rotatePoint,
-  rotatePoints
+  rotatePoints,
+  drawLattice,
+  drawLattices
 }
 
 export default function (Vue) {
