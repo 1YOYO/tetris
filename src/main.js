@@ -34,6 +34,8 @@ import canvasPlugin from './plugins/canvasExtend'
 
 import colorPlugin from './plugins/color'
 
+import methodsPlugin from './plugins/methodsExtend'
+
 Vue.use(ElementUI)
 
 Vue.use(GlobalComponents)
@@ -47,6 +49,8 @@ Vue.use(dialogPlugin)
 Vue.use(canvasPlugin)
 
 Vue.use(colorPlugin)
+
+Vue.use(methodsPlugin)
 
 Vue.config.productionTip = false
 
