@@ -14,11 +14,11 @@ export default function (itemNum = 1) {
   const items = []
 
   for (let i = 0; i < itemNum; i++) {
-    const randomItem = gameItems[getArrayRandomIndex(allItemsNum)]
+    const randomItem = JSON.parse(JSON.stringify(gameItems[getArrayRandomIndex(allItemsNum)]))
 
     if (randomItem.rotateAble) randomItem.rotate = 90 * getArrayRandomIndex(4)
 
-    randomItem.points = rotatePoints(randomItem.points)
+    randomItem.points = rotatePoints(randomItem.rotate, randomItem.points)
 
     items.push(randomItem)
   }
